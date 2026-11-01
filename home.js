@@ -76,7 +76,7 @@ const TINT = { sudoku: '--t-peach', nonogram: '--t-pink', calcudoku: '--t-blue',
 const GAMES = {
   logic: [
     { id: 'sudoku', name: 'Sudoku', desc: 'Il classico 9x9, quattro livelli.',
-      meta: () => { const g = get('sudoku.game.v1'); if (inProgress(g)) return 'Partita in corso'; const w = sumWon(get('sudoku.stats.v1')); return w ? `${w} risolti` : ''; } },
+      meta: () => { const g = get('sudoku.game.v1'); if (inProgress(g)) return 'Partita in corso'; const w = sumWon(get('sudoku.stats.v1')); return w ? `${w} ${w === 1 ? 'risolto' : 'risolti'}` : ''; } },
     { id: 'nonogram', name: 'Nonogram', desc: 'Colora le caselle e scopri il disegno.',
       meta: () => statMeta('nonogram', 'disegni') },
     { id: 'calcudoku', name: 'Calcudoku', desc: 'Sudoku con somme e prodotti.',
@@ -86,7 +86,7 @@ const GAMES = {
     { id: 'stelle', name: 'Stelle', desc: 'Una stella per riga, colonna e zona.',
       meta: () => statMeta('stelle', 'risolti') },
     { id: 'campominato', name: 'Campo minato', desc: 'Senza mai tirare a indovinare.',
-      meta: () => { const g = get('bp.campominato.game'); if (g && g.started && !g.done) return 'Partita in corso'; const w = sumWon(get('bp.campominato.stats')); return w ? `${w} vinte` : ''; } },
+      meta: () => { const g = get('bp.campominato.game'); if (g && g.started && !g.done) return 'Partita in corso'; const w = sumWon(get('bp.campominato.stats')); return w ? `${w} ${w === 1 ? 'vinta' : 'vinte'}` : ''; } },
     { id: 'flow', name: 'Flow', desc: 'Collega i colori, riempi la griglia.',
       meta: () => statMeta('flow', 'risolti') },
     { id: 'luci', name: 'Lights Out', desc: 'Spegni tutte le luci.',
@@ -104,7 +104,7 @@ const GAMES = {
     { id: 'parole', name: 'Parole', desc: 'Indovina la parola in sei tentativi.',
       meta: () => { const s = get('bp.parole.stats'); const g = get('bp.parole.game');
         if (g && !g.done && g.guesses && g.guesses.length) return 'Partita in corso';
-        return s && s.won ? `${s.won} indovinate${s.streak > 1 ? ` · serie ${s.streak}` : ''}` : ''; } }
+        return s && s.won ? `${s.won} ${s.won === 1 ? 'indovinata' : 'indovinate'}${s.streak > 1 ? ` · serie ${s.streak}` : ''}` : ''; } }
   ],
   arcade: [
     { id: 'snake', name: 'Snake', desc: 'Mangia, cresci, non morderti.',
@@ -119,8 +119,9 @@ function statMeta(id, word) {
   const g = get(`bp.${id}.game`);
   if (inProgress(g)) return 'Partita in corso';
   const w = sumWon(get(`bp.${id}.stats`));
-  return w ? `${w} ${word}` : '';
+  return w ? `${w} ${w === 1 ? (SINGULAR[word] || word) : word}` : '';
 }
+const SINGULAR = { disegni: 'disegno', risolti: 'risolto', torri: 'torre', 'partite vinte': 'partita vinta', vinti: 'vinto', vinte: 'vinta', indovinate: 'indovinata' };
 
 const CHIP = { logic: 'Logica', words: 'Parole', relax: 'Relax', arcade: 'Arcade' };
 const box = document.getElementById('cards');

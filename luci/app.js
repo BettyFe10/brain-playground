@@ -120,6 +120,7 @@ function press(i, record = true) {
   if (!G || G.done || paused) return;
   if (record) { G.history.push(i); if (G.history.length > 500) G.history.shift(); G.moves++; }
   for (const k of area(G.n, i)) G.lights[k] ^= 1;
+  BP.sfx('tap');
   cursor = i; hintCell = -1;
   if (!G.lights.some(Boolean)) win();
   save(); render();

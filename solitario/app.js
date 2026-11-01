@@ -49,6 +49,7 @@ const canTab = (c, col) => {
 function flipTops() { for (const t of G.tab) if (t.length && !t[t.length - 1].up) t[t.length - 1].up = true; }
 function afterMove() {
   G.moves++;
+  BP.sfx('tap');
   flipTops();
   if (G.found.every(f => f.length === 13)) win();
   save(); render();
@@ -97,7 +98,7 @@ function tapFound(s) {
   nope(`found:${s}`);
 }
 function nope(key) {
-  BP.vibrate(30);
+  BP.fx('error', 30);
   const el = table.querySelector(`[data-k="${key}"]`);
   if (el) { el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); }
 }

@@ -93,7 +93,7 @@ function flip(i) {
   const [a, b] = open;
   if (G.deck[a] === G.deck[b]) {
     G.got.push(a, b); open = [];
-    BP.vibrate(15);
+    BP.fx('good', 15);
     if (G.got.length === G.deck.length) win();
     save(); render();
   } else {

@@ -174,6 +174,7 @@ function setVal(i, val) {
   if (G.values[i] === val) return;
   G.history.push(G.values.slice()); if (G.history.length > 200) G.history.shift();
   G.values[i] = val;
+  BP.sfx('tap');
   after();
 }
 function tap(i) {

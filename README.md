@@ -34,11 +34,17 @@ Tutte le griglie e i labirinti sono generati sul dispositivo: partite infinite, 
 - `sw.js` - service worker: alla prima apertura salva tutti i giochi per l'uso offline
 - `manifest.webmanifest`, `icons/` - installazione come app sul telefono
 
+## Backup e suoni
+
+- **Backup**: dalla home, icona ingranaggio, poi "Crea backup". Su iPhone scegli "Salva su File" e poi iCloud Drive. "Ripristina" ricarica il file su qualsiasi dispositivo. Nessun server: il file resta tuo.
+- **Suoni**: generati dal codice, nessun file audio. Su iPhone rispettano l'interruttore silenzioso e non interrompono la musica. Si disattivano dalle impostazioni.
+
 ## Sicurezza
 
 - Content Security Policy rigida: solo script dal sito stesso, nessuno script inline, nessuna risorsa esterna.
 - Nessuna richiesta di rete verso terzi, nessun cookie, nessun dato personale.
 - I dati salvati (partite, statistiche) restano nel browser e vengono controllati prima dell'uso: un salvataggio corrotto fa ripartire il gioco pulito.
+- Il ripristino accetta solo file di Brain Playground, solo chiavi dell'app e solo valori validi, fino a 2 MB.
 
 ## Pubblicazione
 

@@ -25,6 +25,68 @@ window.BP = (() => {
   const $ = id => document.getElementById(id);
   const vibrate = ms => { try { if (navigator.vibrate) navigator.vibrate(ms); } catch { /* ignore */ } };
 
+  /* ---------- Impostazioni globali dell'app ---------- */
+  const settings = (() => {
+    const s = store.get('bp.settings', {}) || {};
+    return { sound: s.sound !== false };
+  })();
+  const saveSettings = () => store.set('bp.settings', settings);
+
+  /* ---------- Suoni sintetizzati: nessun file da scaricare, funzionano offline ---------- */
+  // ogni nota: [frequenza Hz, durata s, forma d'onda, volume, ritardo s]
+  const SFX = {
+    tap:   [[660, .05, 'sine', .07]],
+    pop:   [[520, .05, 'triangle', .09], [780, .06, 'triangle', .07, .04]],
+    flag:  [[880, .05, 'triangle', .08], [1175, .05, 'triangle', .06, .05]],
+    good:  [[660, .07, 'triangle', .1], [990, .1, 'triangle', .1, .07]],
+    eat:   [[740, .04, 'square', .035], [988, .04, 'square', .03, .035]],
+    power: [[392, .07, 'triangle', .1], [523, .07, 'triangle', .1, .07], [784, .12, 'triangle', .1, .14]],
+    error: [[196, .1, 'square', .045], [165, .14, 'square', .04, .09]],
+    lose:  [[392, .14, 'triangle', .1], [330, .14, 'triangle', .1, .13], [262, .3, 'triangle', .1, .26]],
+    boom:  [[110, .35, 'sawtooth', .07], [82, .4, 'square', .05, .05]],
+    win:   [[523, .1, 'triangle', .11], [659, .1, 'triangle', .11, .1], [784, .1, 'triangle', .11, .2], [1047, .32, 'triangle', .12, .3]]
+  };
+  let actx = null;
+  const lastPlayed = {};
+  function audio() {
+    if (actx) return actx;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    // iPhone: "ambient" rispetta l'interruttore silenzioso e non interrompe musica o podcast
+    try { if (navigator.audioSession) navigator.audioSession.type = 'ambient'; } catch { /* non supportato */ }
+    try { actx = new AC(); } catch { actx = null; }
+    return actx;
+  }
+  // iOS sblocca l'audio solo dentro un gesto dell'utente: lo prepariamo al primo tocco
+  const unlock = () => {
+    if (!settings.sound) return;
+    const a = audio();
+    if (a && a.state !== 'running') a.resume().catch(() => {});
+  };
+  document.addEventListener('pointerdown', unlock, { capture: true, passive: true });
+  document.addEventListener('keydown', unlock, { capture: true, passive: true });
+  function sfx(name) {
+    if (!settings.sound || !SFX[name]) return;
+    const now = performance.now();
+    if (now - (lastPlayed[name] || 0) < 45) return;
+    lastPlayed[name] = now;
+    const a = audio();
+    if (!a) return;
+    if (a.state !== 'running') a.resume().catch(() => {});
+    const t0 = a.currentTime + 0.01;
+    for (const [freq, dur, type, vol, delay = 0] of SFX[name]) {
+      const o = a.createOscillator(), g = a.createGain(), t = t0 + delay;
+      o.type = type; o.frequency.setValueAtTime(freq, t);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol, t + 0.012);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g).connect(a.destination);
+      o.start(t); o.stop(t + dur + 0.02);
+    }
+  }
+  // suono + vibrazione (la vibrazione funziona su Android; su iPhone Safari non esiste, quindi conta il suono)
+  function fx(name, vib) { sfx(name); if (vib) vibrate(vib); }
+
   /* ---------- Icone ---------- */
   const icons = {
     back: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18 9 12l6-6"/></svg>',
@@ -132,6 +194,7 @@ window.BP = (() => {
       won(level, seconds, { countsForRecord = true } = {}) {
         const s = data[level];
         s.won++; s.total += seconds;
+        sfx('win');
         const record = countsForRecord && (s.best === null || seconds < s.best);
         if (record) s.best = seconds;
         save();
@@ -250,7 +313,7 @@ window.BP = (() => {
 
   return {
     joystick,
-    store, fmt, randInt, shuffle, $, vibrate, icons, header,
+    store, fmt, randInt, shuffle, $, vibrate, fx, sfx, settings, saveSettings, icons, header,
     sheet, closeSheet, sheetOpen, onSheet, toast, loading, levelPicker,
     Stats, statsSheet, switchRow, ticker, setPauseIcon, registerSW, onSwipe
   };

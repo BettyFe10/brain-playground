@@ -180,12 +180,12 @@ function chord(i) {
 function toggleFlag(i) {
   if (!G || G.done || G.open[i]) return;
   G.flag[i] = G.flag[i] ? 0 : 1;
-  BP.vibrate(15);
+  BP.fx('flag', 15);
   save(); render();
 }
 function lose(i) {
   G.done = true; G.lost = true; G.boom = i; G.open[i] = 1;
-  BP.vibrate([60, 40, 120]);
+  BP.fx('boom', [60, 40, 120]);
   save(); render();
   setTimeout(() => BP.sheet(`<h2>Boom!</h2><p class="sub">Ogni griglia si può risolvere con la logica: c'era un indizio da qualche parte. Riprova!</p>
     <div class="stats-grid"><div class="stat"><b>${fmt(G.elapsed)}</b><span>Tempo</span></div><div class="stat"><b>${G.open.reduce((a, b) => a + b, 0) - 1}</b><span>Caselle aperte</span></div><div class="stat"><b>${stats.data[G.level].won}</b><span>Vinte</span></div></div>

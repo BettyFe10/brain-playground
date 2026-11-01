@@ -168,7 +168,7 @@ function onArrive(a) {
   if (!d) return;
   dots.delete(k);
   if (d === 'dot') score += 10;
-  else { score += 50; fright = Math.max(3, 7 - level * 0.5); frightChain = 0; E.forEach(e => { if (!e.inPen && !e.eaten && !e.leaving) { reverse(e); e.scared = true; } }); BP.vibrate(25); }
+  else { score += 50; fright = Math.max(3, 7 - level * 0.5); frightChain = 0; E.forEach(e => { if (!e.inPen && !e.eaten && !e.leaving) { reverse(e); e.scared = true; } }); BP.fx('power', 25); }
   if (!dots.size) levelUp();
 }
 function targetFor(e) {
@@ -239,7 +239,7 @@ function update(dt) {
         const pts = 200 * 2 ** (frightChain - 1);
         score += pts; popups.push({ x: e.x, y: e.y, t: 1, txt: pts });
         e.eaten = true; e.scared = false; e.wait = 3; e.tx = MID; e.ty = 10; e.x = MID; e.y = 10; e.prog = 0; e.moving = false;
-        BP.vibrate(30);
+        BP.fx('good', 30);
       } else return loseLife();
     }
   }
@@ -247,18 +247,18 @@ function update(dt) {
   $('score').textContent = score;
 }
 function loseLife() {
-  lives--; BP.vibrate(150); updateBar();
+  lives--; BP.fx('lose', 150); updateBar();
   if (lives <= 0) return gameOver();
   resetActors();
 }
 function levelUp() {
-  level++; score += 500;
+  level++; score += 500; BP.sfx('win');
   state = 'between';
   showCover(`<h2>Livello ${level - 1} completato!</h2><p>+500 punti. I Brontoli adesso sono un po' più veloci.</p><button class="go" id="goBtn">Avanti</button>`);
   $('goBtn').onclick = () => { buildLevel(); state = 'play'; hideCover(); updateBar(); kick(); };
 }
 function gameOver() {
-  state = 'over';
+  state = 'over'; BP.sfx('lose');
   played++; store.set('bp.labirinto.played', played);
   const record = score > best.score;
   if (record) best.score = score;

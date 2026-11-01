@@ -175,7 +175,7 @@ const endDrag = () => {
   if (changed) { G.history.push(drag.snapshot); if (G.history.length > 100) G.history.shift(); }
   const wasComplete = drag.snapshot[drag.color] && isComplete(drag.color);
   drag = null;
-  if (wasComplete) BP.vibrate(12);
+  if (wasComplete) BP.fx('good', 12);
   checkWin(); save(); render();
 };
 flowEl.addEventListener('pointerup', endDrag);

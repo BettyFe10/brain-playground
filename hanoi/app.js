@@ -94,10 +94,11 @@ function tapPeg(k) {
   const disk = from[from.length - 1];
   if (to.length && to[to.length - 1] < disk) {
     BP.toast('Non si può mettere un disco grande su uno piccolo');
-    BP.vibrate(50);
+    BP.fx('error', 50);
     pick = -1; render(); return;
   }
   to.push(from.pop());
+  BP.sfx('pop');
   G.history.push([pick, k]); if (G.history.length > 600) G.history.shift();
   G.moves++; pick = -1; hintMove = null;
   if (G.pegs[2].length === G.n) win();

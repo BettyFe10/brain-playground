@@ -103,6 +103,7 @@ function move(dir) {
   busy = true;
   for (const s of slides) place(tileEls.get(s.id), s.to);
   setTimeout(() => {
+    if (merges.length) BP.sfx('pop');
     for (const m of merges) {
       m.dying.forEach(id => { const el = tileEls.get(id); if (el) el.remove(); tileEls.delete(id); });
       addTile(m.tile, m.at, 'pop');
@@ -119,12 +120,12 @@ function afterMove() {
   store.set(K_BEST, best);
   updateScores();
   if (!G.won && maxTile >= 2048) {
-    G.won = true; stats.reached2048++; store.set(K_STATS, stats);
+    G.won = true; stats.reached2048++; BP.sfx('win'); store.set(K_STATS, stats);
     BP.sheet(`<h2>2048!</h2><p class="sub">Ce l'hai fatta. Vuoi continuare per un punteggio ancora più alto?</p>
       <button class="primary" data-act="close">Continua</button><button class="ghost" data-act="new">Nuova partita</button>`);
   }
   if (!canMove(G.grid)) {
-    G.over = true;
+    G.over = true; BP.sfx('lose');
     setTimeout(() => BP.sheet(`<h2>Fine partita</h2>
       <div class="stats-grid"><div class="stat"><b>${G.score}</b><span>Punti</span></div><div class="stat"><b>${maxTile}</b><span>Tessera max</span></div><div class="stat"><b>${best.score}</b><span>Record</span></div></div>
       <button class="primary" data-act="new">Nuova partita</button><button class="ghost" data-act="undoLast">Annulla l'ultima mossa</button>`), 300);

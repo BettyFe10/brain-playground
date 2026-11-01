@@ -145,11 +145,12 @@ function submit() {
   }, 5 * 140 + 400);
   save();
 }
-function shake(row) { row.classList.remove('shake'); void row.offsetWidth; row.classList.add('shake'); BP.vibrate(40); }
+function shake(row) { row.classList.remove('shake'); void row.offsetWidth; row.classList.add('shake'); BP.fx('error', 40); }
 function finish(won) {
   G.done = true; G.won = won;
   stats.played++;
   if (won) { stats.won++; stats.dist[G.guesses.length - 1]++; }
+  BP.sfx(won ? 'win' : 'lose');
   if (G.mode === 'daily') {
     const yesterday = dayKey(new Date(Date.now() - 86400000));
     if (won) { stats.streak = stats.lastDaily === yesterday ? stats.streak + 1 : 1; stats.maxStreak = Math.max(stats.maxStreak, stats.streak); stats.lastDaily = G.day; }

@@ -78,15 +78,15 @@ function step() {
   if (S.grow > 0) { S.grow--; S.prev.push(S.prev[S.prev.length - 1].slice()); } else S.body.pop();
   const pts = SPEEDS[opts.speed].pts;
   if (S.food && hx === S.food[0] && hy === S.food[1]) {
-    S.score += pts; S.eaten++; S.grow += 1; BP.vibrate(15);
+    S.score += pts; S.eaten++; S.grow += 1; BP.fx('eat', 15);
     placeFood();
     if (!S.gold && S.eaten % 5 === 0) { S.gold = freeCell(); S.goldT = 6000; }
   }
-  if (S.gold && hx === S.gold[0] && hy === S.gold[1]) { S.score += pts * 5; S.grow += 2; S.gold = null; BP.vibrate([20, 40, 20]); }
+  if (S.gold && hx === S.gold[0] && hy === S.gold[1]) { S.score += pts * 5; S.grow += 2; S.gold = null; BP.fx('power', [20, 40, 20]); }
   $('score').textContent = S.score;
 }
 function die() {
-  S.dead = true; state = 'over'; BP.vibrate(120);
+  S.dead = true; state = 'over'; BP.fx('lose', 120);
   played++; store.set('bp.snake.played', played);
   const key = opts.speed + (opts.walls ? '-muri' : '');
   const prevBest = best.byMode[key] || 0;

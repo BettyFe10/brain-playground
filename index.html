@@ -22,7 +22,17 @@
 .hero{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:4px 2px 18px;padding:18px 18px 18px 20px;border-radius:26px;background:linear-gradient(135deg,var(--t-pink),var(--t-peach) 55%,var(--t-yellow));position:relative;overflow:hidden}
 .mascot{width:clamp(96px,26vw,150px);flex:none;animation:bob 3.2s ease-in-out infinite;filter:drop-shadow(0 8px 12px rgba(224,115,140,.25))}
 @keyframes bob{50%{transform:translateY(-6px) rotate(-3deg)}}
-.hero-top{display:flex;justify-content:flex-end;margin:0 4px 8px}
+.hero-top{display:flex;justify-content:space-between;align-items:center;margin:0 4px 10px}
+.setbtn{position:relative}
+.setbtn .dot{position:absolute;top:7px;right:7px;width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 2px var(--btn)}
+.backup-box{background:var(--btn);border-radius:18px;padding:14px 16px;margin-top:6px}
+.backup-box p{font-size:14px;line-height:1.45;color:var(--muted)}
+.backup-box p b{color:var(--ink)}
+.backup-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.backup-row button{padding:13px 8px;border-radius:14px;font-weight:800;font-size:15px;background:var(--paper);display:flex;align-items:center;justify-content:center;gap:8px}
+.backup-row button.main{background:var(--accent);color:var(--accent-ink)}
+.backup-row svg{width:18px;height:18px}
+.warn{color:var(--accent)!important;font-weight:700}
 .hero h1{font-family:"Nunito",ui-rounded,system-ui,sans-serif;font-weight:900;font-size:clamp(32px,8.4vw,52px);line-height:.95;letter-spacing:-1px;color:#2a2440}
 .hero h1 span{color:var(--accent)}
 .hero p{color:#5b5470;font-size:14px;margin-top:10px;line-height:1.45;max-width:420px;font-weight:600}
@@ -85,7 +95,10 @@
 </head>
 <body>
 <main class="hub">
-  <div class="hero-top"><div class="today" id="today"></div></div>
+  <div class="hero-top">
+    <div class="today" id="today"></div>
+    <button class="icon-btn setbtn" id="btnSettings" aria-label="Impostazioni e backup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><i class="dot" id="backupDot" hidden></i></button>
+  </div>
   <section class="hero">
     <div>
       <h1>Brain<br>Playground<span>.</span></h1>
@@ -104,6 +117,8 @@
   <p class="foot"><span class="offline-pill" id="netState"><i></i>Pronta offline</span><br>I progressi restano salvati su questo dispositivo.</p>
 </main>
 
+<script src="shared/ui.js"></script>
 <script src="home.js"></script>
+<script src="shared/backup.js"></script>
 </body>
 </html>

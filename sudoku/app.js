@@ -239,9 +239,10 @@ function input(d) {
       S.values[i] = d;
       S.notes[i] = 0;
       lastPlaced = i;
+      if (d === S.solution[i] && window.BP) BP.sfx('tap');
       if (d !== S.solution[i]) {
         S.errors++;
-        if (navigator.vibrate) navigator.vibrate(60);
+        if (window.BP) BP.fx('error', 60); else if (navigator.vibrate) navigator.vibrate(60);
       }
       if (settings.autoNotes) clearPeerNotes(i, d);
     }
@@ -328,6 +329,7 @@ function startGame(level) {
 }
 function win() {
   if (S.done) return;
+  if (window.BP) BP.sfx('win');
   S.done = true;
   sel = -1;
   const st = stats[S.level];

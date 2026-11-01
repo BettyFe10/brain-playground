@@ -210,6 +210,7 @@ function setVal(i, v) {
   if (!G || G.done || paused || G.values[i] === v) return;
   G.history.push(G.values.slice()); if (G.history.length > 200) G.history.shift();
   G.values[i] = v;
+  BP.sfx(v === 2 ? 'pop' : 'tap');
   if (v === 2 && settings.autoDots) neighborsOf(i).forEach(k => { if (G.values[k] === 0) G.values[k] = 1; });
   after();
 }

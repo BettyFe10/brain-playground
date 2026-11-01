@@ -1,7 +1,7 @@
 // Service worker di Brain Playground.
 // Alla prima apertura scarica TUTTI i giochi, così funzionano offline anche se non li hai mai aperti.
 // Dopo ogni modifica ai file aumenta VERSION, così i telefoni scaricano la nuova versione.
-const VERSION = 'brain-playground-v7';
+const VERSION = 'brain-playground-v8';
 const ASSETS = [
   "./",
   "./2048/",
@@ -48,6 +48,7 @@ const ASSETS = [
   "./parole/index.html",
   "./parole/words.js",
   "./shared/arcade.css",
+  "./shared/backup.js",
   "./shared/base.css",
   "./shared/fonts/nunito.woff2",
   "./shared/mascot.svg",

@@ -260,7 +260,7 @@ function input(d) {
     if (G.values[i] === d) G.values[i] = 0;
     else {
       G.values[i] = d; G.notes[i] = 0; lastPlaced = i;
-      if (d !== G.sol[i]) { G.errors++; BP.vibrate(60); }
+      if (d !== G.sol[i]) { G.errors++; BP.fx('error', 60); } else BP.sfx('tap');
       if (settings.autoNotes) clearPeerNotes(i, d);
     }
   }
