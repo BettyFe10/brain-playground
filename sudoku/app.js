@@ -488,6 +488,23 @@ try {
   showNewGame(true);
 }
 
+// ricorda l'ultimo gioco usato (per l'ordine "Recenti" nella home): conta la prima interazione, non la sola apertura
+(() => {
+  const id = location.pathname.split('/').filter(Boolean).pop();
+  if (!/^[a-z0-9]+$/.test(id || '')) return;
+  let marked = false;
+  const mark = e => {
+    if (marked || (e.target && e.target.closest && e.target.closest('a'))) return;
+    marked = true;
+    try {
+      const r = JSON.parse(localStorage.getItem('bp.recent') || '{}') || {};
+      r[id] = Date.now();
+      localStorage.setItem('bp.recent', JSON.stringify(r));
+    } catch { /* storage non disponibile */ }
+  };
+  document.addEventListener('pointerdown', mark, true);
+  document.addEventListener('keydown', mark, true);
+})();
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
   window.addEventListener('load', () => navigator.serviceWorker.register('../sw.js').catch(() => {}));
 }

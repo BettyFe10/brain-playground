@@ -143,6 +143,40 @@ for (const g of all) {
   el.lastElementChild.textContent = meta;
 }
 
+/* ============ Ultimi giocati ============ */
+const recent = (() => {
+  const r = get('bp.recent'), out = {};
+  if (r && typeof r === 'object') for (const g of all) if (Number.isFinite(r[g.id])) out[g.id] = r[g.id];
+  return out;
+})();
+function ago(ts) {
+  const day = 86400000, start = new Date(); start.setHours(0, 0, 0, 0);
+  if (ts >= start.getTime()) return 'oggi';
+  if (ts >= start.getTime() - day) return 'ieri';
+  const n = Math.ceil((start.getTime() - ts) / day);
+  return n < 30 ? `${n} giorni fa` : 'tempo fa';
+}
+for (const g of all) {
+  if (!recent[g.id]) continue;
+  const el = box.querySelector(`[data-meta="${g.id}"]`);
+  if (el.classList.contains('idle')) { el.classList.remove('idle'); el.lastElementChild.textContent = `Giocato ${ago(recent[g.id])}`; }
+  else el.lastElementChild.textContent += ` · ${ago(recent[g.id])}`;
+}
+let sort = (() => { try { return localStorage.getItem('bp.home.sort') === 'type' ? 'type' : 'recent'; } catch { return 'recent'; } })();
+const SORT_ICON = {
+  recent: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  type: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>'
+};
+function applySort() {
+  const order = all.map((g, k) => ({ id: g.id, k, t: recent[g.id] || 0 }));
+  if (sort === 'recent') order.sort((a, b) => (b.t - a.t) || (a.k - b.k));
+  const emptyEl = document.getElementById('empty');
+  for (const o of order) box.insertBefore(box.querySelector(`[data-id="${o.id}"]`), emptyEl);
+  const btn = document.getElementById('sortBtn');
+  btn.innerHTML = SORT_ICON[sort] + (sort === 'recent' ? 'Recenti' : 'Per tipo');
+  btn.setAttribute('aria-label', sort === 'recent' ? 'Ordine: ultimi giocati. Tocca per ordinare per tipo' : 'Ordine: per tipo. Tocca per ordinare per ultimi giocati');
+}
+
 /* ============ Filtro per categoria ============ */
 const FILTERS = [['all', 'Tutti'], ['running', 'In corso'], ['logic', 'Logica'], ['words', 'Parole'], ['relax', 'Relax'], ['arcade', 'Arcade']];
 const count = f => f === 'all' ? all.length : f === 'running' ? running.size : all.filter(g => g.section === f).length;
@@ -176,6 +210,22 @@ bar.addEventListener('click', e => {
   btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
 });
 applyFilter(false);
+applySort();
+document.getElementById('sortBtn').addEventListener('click', () => {
+  sort = sort === 'recent' ? 'type' : 'recent';
+  try { localStorage.setItem('bp.home.sort', sort); } catch { /* ignore */ }
+  applySort(); applyFilter(true);
+});
+// ombra sotto la barra quando resta fissa in alto
+if ('IntersectionObserver' in window) {
+  const fb = document.getElementById('filterbar');
+  new IntersectionObserver(([e]) => fb.classList.toggle('stuck', !e.isIntersecting && e.boundingClientRect.top < 0)).observe(document.getElementById('sentinel'));
+}
+// cambiando filtro, se la barra è già fissa riporta in vista l'inizio della lista
+bar.addEventListener('click', () => {
+  const fb = document.getElementById('filterbar');
+  if (fb.getBoundingClientRect().top <= 1) window.scrollTo({ top: box.offsetTop - fb.offsetHeight - 8, behavior: 'smooth' });
+});
 
 const d = new Date();
 document.getElementById('today').innerHTML =
