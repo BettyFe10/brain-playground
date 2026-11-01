@@ -124,8 +124,9 @@ function statMeta(id, word) {
 
 const CHIP = { logic: 'Logica', words: 'Parole', relax: 'Relax', arcade: 'Arcade' };
 const box = document.getElementById('cards');
+const running = new Set();
 const all = Object.entries(GAMES).flatMap(([section, list]) => list.map(g => ({ ...g, section })));
-box.innerHTML = all.map(g => `<a class="card" href="${g.id}/">
+box.innerHTML = all.map(g => `<a class="card" href="${g.id}/" data-cat="${g.section}" data-id="${g.id}">
     <div class="art" aria-hidden="true" style="--tint:var(${TINT[g.id]})">${ART[g.id]}</div>
     <span class="chip c-${g.section}">${CHIP[g.section]}</span>
     <h3>${g.name}</h3><p>${g.desc}</p>
@@ -136,10 +137,45 @@ for (const g of all) {
   let meta = '';
   try { meta = String(g.meta() || ''); } catch { meta = ''; }
   if (!meta) continue;
+  if (meta === 'Partita in corso') running.add(g.id);
   const el = box.querySelector(`[data-meta="${g.id}"]`);
   el.classList.remove('idle');
   el.lastElementChild.textContent = meta;
 }
+
+/* ============ Filtro per categoria ============ */
+const FILTERS = [['all', 'Tutti'], ['running', 'In corso'], ['logic', 'Logica'], ['words', 'Parole'], ['relax', 'Relax'], ['arcade', 'Arcade']];
+const count = f => f === 'all' ? all.length : f === 'running' ? running.size : all.filter(g => g.section === f).length;
+let filter = (() => { try { return localStorage.getItem('bp.home.filter') || 'all'; } catch { return 'all'; } })();
+if (!FILTERS.some(([k]) => k === filter) || count(filter) === 0) filter = 'all';
+const bar = document.getElementById('filters');
+bar.innerHTML = FILTERS.map(([k, label]) =>
+  `<button role="tab" data-f="${k}" ${count(k) ? '' : 'disabled'}>${label}<b>${count(k)}</b></button>`).join('');
+box.insertAdjacentHTML('beforeend', '<p class="empty" id="empty">Nessun gioco qui.</p>');
+function applyFilter(animate) {
+  bar.querySelectorAll('button').forEach(btn => {
+    const on = btn.dataset.f === filter;
+    btn.classList.toggle('on', on);
+    btn.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+  let shown = 0;
+  box.querySelectorAll('.card').forEach(c => {
+    const vis = filter === 'all' || (filter === 'running' ? running.has(c.dataset.id) : c.dataset.cat === filter);
+    c.classList.toggle('hide', !vis);
+    if (vis) shown++;
+  });
+  document.getElementById('empty').classList.toggle('show', !shown);
+  if (animate) { box.classList.remove('fade'); void box.offsetWidth; box.classList.add('fade'); }
+}
+bar.addEventListener('click', e => {
+  const btn = e.target.closest('button[data-f]');
+  if (!btn || btn.disabled) return;
+  filter = btn.dataset.f;
+  try { localStorage.setItem('bp.home.filter', filter); } catch { /* ignore */ }
+  applyFilter(true);
+  btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+});
+applyFilter(false);
 
 const d = new Date();
 document.getElementById('today').innerHTML =

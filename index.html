@@ -44,6 +44,20 @@
 .art svg{width:62%;height:auto;max-height:84%}
 .card h3{font-family:"Nunito",ui-rounded,system-ui,sans-serif;font-weight:800;font-size:18px;letter-spacing:-.2px}
 .card p{font-size:13px;color:var(--muted);line-height:1.4;margin-top:-6px}
+.filters{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:22px -16px 14px;padding:2px 16px 4px;-webkit-overflow-scrolling:touch}
+.filters::-webkit-scrollbar{display:none}
+.filters button{flex:none;display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border-radius:999px;background:var(--paper);
+  font-weight:800;font-size:14px;color:var(--muted);box-shadow:inset 0 0 0 1.5px var(--line);transition:background-color .15s,color .15s}
+.filters button b{font-size:12px;min-width:20px;padding:1px 6px;border-radius:999px;background:var(--btn);color:var(--muted);font-weight:800}
+.filters button.on{background:var(--ink);color:var(--bg);box-shadow:none}
+.filters button.on b{background:color-mix(in srgb,var(--bg) 22%,transparent);color:var(--bg)}
+.filters button:disabled{opacity:.4}
+@media (min-width:700px){.filters{margin-left:0;margin-right:0;padding-left:2px;flex-wrap:wrap}}
+.card.hide{display:none}
+.cards.fade .card{animation:cardIn .25s ease both}
+@keyframes cardIn{from{opacity:0;transform:translateY(6px)}}
+.empty{display:none;grid-column:1 / -1;text-align:center;color:var(--muted);padding:30px 10px;font-weight:600}
+.empty.show{display:block}
 .chip{align-self:flex-start;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:var(--btn);color:var(--muted);margin-bottom:-4px}
 .chip.c-logic{background:var(--t-blue);color:#3d5a8c}.chip.c-words{background:var(--t-mint);color:#3f7a50}.chip.c-arcade{background:var(--t-lav);color:#6b55a3}.chip.c-relax{background:var(--t-pink);color:#a8456a}
 @media (prefers-color-scheme: dark){.chip.c-logic{color:#a9c1ee}.chip.c-words{color:#9fd8ae}.chip.c-arcade{color:#c7b6ef}.chip.c-relax{color:#f2a5c0}}
@@ -73,7 +87,7 @@
     <img class="mascot" src="shared/mascot.svg" alt="" width="150" height="150">
   </section>
 
-  <div class="group">Scegli un gioco</div>
+  <div class="filters" id="filters" role="tablist" aria-label="Filtra i giochi"></div>
   <div class="cards" id="cards"></div>
 
   <p class="foot"><span class="offline-pill" id="netState"><i></i>Pronta offline</span><br>I progressi restano salvati su questo dispositivo.</p>
