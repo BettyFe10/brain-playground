@@ -154,6 +154,13 @@ function draw(t) {
 }
 
 /* ============ Ciclo di gioco ============ */
+// il ciclo di disegno gira solo durante il gioco: in pausa o nei menu la CPU (e la batteria) riposa
+let running = false;
+function kick() {
+  if (running) return;
+  running = true;
+  requestAnimationFrame(t => { last = t; loop(t); });
+}
 function loop(now) {
   const dt = Math.min(100, now - last); last = now;
   const tick = SPEEDS[opts.speed].ms;
@@ -163,7 +170,7 @@ function loop(now) {
     while (acc >= tick && state === 'play') { acc -= tick; step(); }
   }
   draw(state === 'play' ? acc / tick : 1);
-  requestAnimationFrame(loop);
+  if (state === 'play') requestAnimationFrame(loop); else running = false;
 }
 
 /* ============ Schermate ============ */
@@ -195,7 +202,7 @@ function menu() {
   updateBar();
 }
 function start() {
-  newState(); acc = 0; state = 'play';
+  newState(); acc = 0; state = 'play'; kick();
   $('score').textContent = 0;
   hideCover(); updateBar();
 }
@@ -204,7 +211,7 @@ function togglePause() {
     state = 'pause';
     showCover('<h2>In pausa</h2><button class="go" id="goBtn">Riprendi</button>');
     $('goBtn').onclick = togglePause;
-  } else if (state === 'pause') { state = 'play'; hideCover(); }
+  } else if (state === 'pause') { state = 'play'; hideCover(); kick(); }
   updateBar();
 }
 
@@ -248,7 +255,7 @@ BP.onSheet(act => {
 readColors();
 resize();
 menu();
-requestAnimationFrame(t => { last = t; loop(t); });
+draw(1);
 BP.registerSW();
 window.__game = { get state() { return { S, state }; }, step, turn };
 })();

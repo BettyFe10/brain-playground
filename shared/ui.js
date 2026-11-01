@@ -84,7 +84,7 @@ window.BP = (() => {
     modal.classList.add('open');
     modal.dataset.locked = locked ? '1' : '';
   }
-  function closeSheet() { ensureDom(); modal.classList.remove('open'); if (BP.onClose) BP.onClose(); }
+  function closeSheet() { ensureDom(); modal.classList.remove('open'); }
   const sheetOpen = () => !!modal && modal.classList.contains('open');
   const onSheet = fn => { handler = fn; };
   function toast(msg, ms = 1700) {
@@ -252,7 +252,6 @@ window.BP = (() => {
     joystick,
     store, fmt, randInt, shuffle, $, vibrate, icons, header,
     sheet, closeSheet, sheetOpen, onSheet, toast, loading, levelPicker,
-    Stats, statsSheet, switchRow, ticker, setPauseIcon, registerSW, onSwipe,
-    onClose: null
+    Stats, statsSheet, switchRow, ticker, setPauseIcon, registerSW, onSwipe
   };
 })();

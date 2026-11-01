@@ -127,7 +127,7 @@ function resetActors() {
 }
 function newGame() {
   score = 0; lives = 3; level = 1;
-  buildLevel(); state = 'play'; hideCover(); updateBar();
+  buildLevel(); state = 'play'; hideCover(); updateBar(); kick();
 }
 
 /* ============ Movimento su griglia ============ */
@@ -255,7 +255,7 @@ function levelUp() {
   level++; score += 500;
   state = 'between';
   showCover(`<h2>Livello ${level - 1} completato!</h2><p>+500 punti. I Brontoli adesso sono un po' più veloci.</p><button class="go" id="goBtn">Avanti</button>`);
-  $('goBtn').onclick = () => { buildLevel(); state = 'play'; hideCover(); updateBar(); };
+  $('goBtn').onclick = () => { buildLevel(); state = 'play'; hideCover(); updateBar(); kick(); };
 }
 function gameOver() {
   state = 'over';
@@ -290,6 +290,7 @@ function resize() {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ts = r.width / W;
   renderMazeLayer();
+  if (!running) draw();
 }
 function renderMazeLayer() {
   if (!M) return;
@@ -384,10 +385,17 @@ function draw() {
   }
 }
 let last = 0;
+// il ciclo di disegno gira solo durante il gioco: in pausa o nei menu la CPU (e la batteria) riposa
+let running = false;
+function kick() {
+  if (running) return;
+  running = true;
+  requestAnimationFrame(t => { last = t; loop(t); });
+}
 function loop(now) {
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
   update(dt); draw();
-  requestAnimationFrame(loop);
+  if (state === 'play') requestAnimationFrame(loop); else running = false;
 }
 
 /* ============ Schermate e controlli ============ */
@@ -421,7 +429,7 @@ function togglePause() {
     state = 'pause';
     showCover('<h2>In pausa</h2><button class="go" id="goBtn">Riprendi</button>');
     $('goBtn').onclick = togglePause;
-  } else if (state === 'pause') { state = 'play'; hideCover(); }
+  } else if (state === 'pause') { state = 'play'; hideCover(); kick(); }
   updateBar();
 }
 BP.onSwipe($('app'), d => { if (state === 'play') steer(d); }, 14);
@@ -457,13 +465,13 @@ BP.onSheet(act => {
   if (act === 'resetStats' && confirm('Azzerare i record?')) { best = { score: 0, level: 0 }; played = 0; store.set('bp.labirinto.best', best); store.set('bp.labirinto.played', 0); BP.closeSheet(); }
 });
 window.addEventListener('resize', resize);
-matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { readColors(); renderMazeLayer(); });
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { readColors(); renderMazeLayer(); if (!running) draw(); });
 
 readColors();
 M = genMaze(); dots = new Map(); E = []; P = actor(M.start[0], M.start[1], 'left');
 resize();
 menu();
-requestAnimationFrame(t => { last = t; loop(t); });
+draw();
 BP.registerSW();
 window.__game = { genMaze, get state() { return { state, P, E, dots, score, lives, level, M }; } };
 })();
