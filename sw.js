@@ -1,14 +1,46 @@
-// Service worker: mette in cache l'app per usarla offline.
-// Quando modifichi i file, cambia VERSION così i telefoni scaricano la nuova versione.
-const VERSION = 'brain-playground-v1';
+// Service worker di Brain Playground.
+// Alla prima apertura scarica TUTTI i giochi, così funzionano offline anche se non li hai mai aperti.
+// Dopo ogni modifica ai file aumenta VERSION, così i telefoni scaricano la nuova versione.
+const VERSION = 'brain-playground-v2';
 const ASSETS = [
-  './',
-  './index.html',
-  './manifest.webmanifest',
-  './icons/icon-192.png',
-  './icons/icon-512.png',
-  './icons/icon-maskable-512.png',
-  './icons/apple-touch-icon.png'
+  "./",
+  "./calcudoku/",
+  "./labirinto/",
+  "./nonogram/",
+  "./parole/",
+  "./snake/",
+  "./stelle/",
+  "./sudoku/",
+  "./takuzu/",
+  "./calcudoku/app.js",
+  "./calcudoku/index.html",
+  "./home.js",
+  "./icons/apple-touch-icon.png",
+  "./icons/icon-192.png",
+  "./icons/icon-512.png",
+  "./icons/icon-maskable-512.png",
+  "./index.html",
+  "./labirinto/app.js",
+  "./labirinto/index.html",
+  "./manifest.webmanifest",
+  "./nonogram/app.js",
+  "./nonogram/index.html",
+  "./parole/app.js",
+  "./parole/index.html",
+  "./parole/words.js",
+  "./shared/arcade.css",
+  "./shared/base.css",
+  "./shared/fonts/nunito.woff2",
+  "./shared/mascot.svg",
+  "./shared/ui.js",
+  "./snake/app.js",
+  "./snake/index.html",
+  "./stelle/app.js",
+  "./stelle/index.html",
+  "./sudoku/app.js",
+  "./sudoku/index.html",
+  "./takuzu/app.js",
+  "./takuzu/index.html"
 ];
 
 self.addEventListener('install', event => {
@@ -19,34 +51,27 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys => Promise.all(keys.filter(k => k !== VERSION).map(k => caches.delete(k))))
+      .then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// Rete prima per la pagina (così vedi subito gli aggiornamenti), cache se sei offline.
-// Cache prima per tutto il resto (icone, manifest).
+// Prima la copia salvata (istantanea e offline), poi aggiorna in background se c'è rete.
 self.addEventListener('fetch', event => {
   const req = event.request;
-  if (req.method !== 'GET' || new URL(req.url).origin !== location.origin) return;
-
-  if (req.mode === 'navigate') {
-    event.respondWith(
-      fetch(req)
-        .then(res => {
-          const copy = res.clone();
-          caches.open(VERSION).then(c => c.put('./index.html', copy));
-          return res;
-        })
-        .catch(() => caches.match('./index.html'))
-    );
-    return;
-  }
-
-  event.respondWith(
-    caches.match(req).then(hit => hit || fetch(req).then(res => {
-      const copy = res.clone();
-      caches.open(VERSION).then(c => c.put(req, copy));
+  if (req.method !== 'GET') return;
+  const url = new URL(req.url);
+  if (url.origin !== location.origin) return;
+  event.respondWith((async () => {
+    const cache = await caches.open(VERSION);
+    const cached = await cache.match(req, { ignoreSearch: true });
+    const network = fetch(req).then(res => {
+      if (res && res.ok && res.type === 'basic') cache.put(req, res.clone());
       return res;
-    }))
-  );
+    }).catch(() => null);
+    if (cached) { event.waitUntil(network); return cached; }
+    const res = await network;
+    if (res) return res;
+    if (req.mode === 'navigate') return (await cache.match('./')) || Response.error();
+    return Response.error();
+  })());
 });

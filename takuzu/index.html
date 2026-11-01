@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Takuzu - Brain Playground</title>
+<meta name="theme-color" content="#f4efe6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14161c" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="../shared/base.css">
+<style>
+:root{--c0:#2f5d9e;--c1:#e8915b}
+@media (prefers-color-scheme: dark){:root{--c0:#7aa2f7;--c1:#f0a36b}}
+.board{display:grid;aspect-ratio:1/1;width:100%;gap:var(--gap);padding:var(--gap);
+  background:var(--paper);border-radius:16px;box-shadow:var(--shadow)}
+.cell{position:relative;border-radius:30%;background:var(--btn);cursor:pointer;transition:transform .12s, background-color .15s}
+.cell:active{transform:scale(.92)}
+.cell.v0{background:var(--c0)}
+.cell.v1{background:var(--c1)}
+.cell.given::after{content:"";position:absolute;inset:38%;border-radius:50%;background:rgba(255,255,255,.55)}
+.cell.bad{box-shadow:0 0 0 3px var(--err)}
+.cell.hintc{animation:flash .9s ease}
+@keyframes flash{30%{box-shadow:0 0 0 4px var(--accent)}}
+.board.won .cell{animation:bounce .5s ease both}
+@keyframes bounce{40%{transform:scale(.8)}100%{transform:scale(1)}}
+.counter{display:grid;gap:var(--gap)}
+.legend{display:flex;gap:14px;justify-content:center;font-size:13px;color:var(--muted);align-items:center}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:5px;vertical-align:-2px;margin-right:6px}
+.tools{grid-template-columns:repeat(3,1fr)}
+</style>
+</head>
+<body>
+<div class="app split" id="app">
+  <header class="top"></header>
+  <div class="stage" id="stage">
+    <div class="board" id="board"></div>
+    <div class="overlay-pause" id="pauseOverlay"><div>In pausa<small>Tocca per riprendere</small></div></div>
+  </div>
+  <div class="side">
+    <div class="status">
+      <span class="tag" id="lvl">-</span>
+      <span>Aiuti <b id="hints">0</b></span>
+      <button class="timer" id="btnPause" aria-label="Pausa"><svg id="pauseIcon" viewBox="0 0 24 24" fill="currentColor"></svg><span id="timer">00:00</span></button>
+    </div>
+    <div class="tools">
+      <button class="tool" id="btnUndo"></button>
+      <button class="tool" id="btnHint"></button>
+      <button class="tool" id="btnRestart"></button>
+    </div>
+    <p class="legend extra"><span><i style="background:var(--c0)"></i>Blu</span><span><i style="background:var(--c1)"></i>Arancio</span><span>Tocca per cambiare</span></p>
+    <p class="kbd">Tastiera: frecce, <kbd>1</kbd> blu, <kbd>2</kbd> arancio, <kbd>Canc</kbd> svuota, <kbd>Ctrl</kbd>+<kbd>Z</kbd> annulla</p>
+  </div>
+</div>
+<script src="../shared/ui.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

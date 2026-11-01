@@ -1,0 +1,178 @@
+/* Brain Playground - stile condiviso da tutti i giochi */
+@font-face{font-family:"Nunito";src:url("fonts/nunito.woff2") format("woff2");font-weight:200 1000;font-style:normal;font-display:swap}
+:root{
+  --bg:#f4efe6; --paper:#fffdf8; --ink:#1f2a44; --muted:#7a7f8c;
+  --line:#d6cfc0; --line-strong:#1f2a44; --accent:#c8553d; --accent-ink:#fff;
+  --user:#2f5d9e; --sel:#f6d9a8; --peer:#f1eadb; --same:#ecc89e;
+  --ok:#3f8f5a; --ok-bg:#d8ecd9; --warn:#c9a227;
+  --err:#c0392b; --err-bg:#f8dcd5; --btn:#ebe4d6; --btn-hi:#e0d7c4;
+  --shadow:0 1px 0 rgba(31,42,68,.06), 0 8px 24px -12px rgba(31,42,68,.25);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#14161c; --paper:#1c1f27; --ink:#e8e3d8; --muted:#8b8f9a;
+    --line:#333745; --line-strong:#b9b2a3; --accent:#e07a5f; --accent-ink:#1a1a1a;
+    --user:#8fb4ff; --sel:#5a4526; --peer:#242833; --same:#4a3a28;
+    --ok:#6cc488; --ok-bg:#1f3527; --warn:#e5c454;
+    --err:#ff7b6b; --err-bg:#3d2220; --btn:#252935; --btn-hi:#2f3442;
+    --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 28px -12px rgba(0,0,0,.7);
+    color-scheme:dark;
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:"Nunito",ui-rounded,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  -webkit-tap-highlight-color:transparent; -webkit-user-select:none; user-select:none;
+  overscroll-behavior:none;
+}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;touch-action:manipulation}
+button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.app{
+  max-width:540px;margin:0 auto;min-height:100%;
+  display:flex;flex-direction:column;gap:12px;
+  padding:calc(env(safe-area-inset-top) + 12px) 16px calc(env(safe-area-inset-bottom) + 16px);
+}
+
+/* Header */
+header.top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.top-left{display:flex;align-items:center;gap:10px;min-width:0}
+.brand{font-family:"Nunito",ui-rounded,system-ui,sans-serif;font-size:26px;font-weight:900;letter-spacing:-.4px;line-height:1.05;white-space:nowrap}
+.brand span{color:var(--accent)}
+.brand small{display:block;font-family:"Nunito",ui-rounded,system-ui,sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:1px}
+.hbtns{display:flex;gap:6px;flex:none}
+.icon-btn{width:42px;height:42px;border-radius:15px;display:grid;place-items:center;background:var(--btn);flex:none}
+.icon-btn:active{background:var(--btn-hi)}
+.icon-btn svg{width:20px;height:20px}
+.pill{height:42px;padding:0 18px;border-radius:15px;background:var(--accent);color:var(--accent-ink);font-weight:800;font-size:15px;box-shadow:0 6px 14px -8px var(--accent)}
+.pill:active{opacity:.85}
+
+/* Barra di stato */
+.status{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px;color:var(--muted);padding:0 2px;min-height:28px}
+.status b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.tag{display:inline-block;padding:4px 12px;border-radius:999px;background:var(--sel);color:var(--ink);font-weight:800;font-size:13px}
+.timer{display:flex;align-items:center;gap:6px;font-variant-numeric:tabular-nums;color:var(--ink);font-weight:600;padding:4px 8px;border-radius:8px}
+.timer svg{width:14px;height:14px}
+.timer:active{background:var(--btn)}
+
+/* Area di gioco */
+.stage{position:relative}
+.overlay-pause{
+  position:absolute;inset:0;border-radius:10px;display:none;place-items:center;z-index:5;
+  background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  font-weight:600;font-size:17px;text-align:center;cursor:pointer
+}
+.overlay-pause small{display:block;color:var(--muted);font-weight:400;font-size:14px;margin-top:4px}
+.paused .overlay-pause{display:grid}
+
+/* Strumenti */
+.tools{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tool{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 0;border-radius:12px;font-size:12px;color:var(--muted);position:relative}
+.tool svg{width:24px;height:24px;color:var(--ink)}
+.tool:active{background:var(--btn)}
+.tool .badge{position:absolute;top:4px;right:calc(50% - 26px);font-size:10px;font-weight:700;padding:1px 6px;border-radius:999px;background:var(--btn-hi);color:var(--muted)}
+.tool.on .badge{background:var(--accent);color:var(--accent-ink)}
+.tool.on{color:var(--accent)}
+.tool:disabled{opacity:.35}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--btn);border-radius:14px;padding:4px;gap:4px}
+.seg button{padding:10px 8px;border-radius:10px;font-weight:600;font-size:14px;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:8px}
+.seg button.on{background:var(--paper);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.seg svg{width:18px;height:18px}
+
+/* Tastierino numerico */
+.pad{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:6px}
+.num{
+  aspect-ratio:3/4;border-radius:14px;background:var(--btn);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-size:clamp(22px,6.8vw,30px);font-weight:800;color:var(--user);font-variant-numeric:tabular-nums
+}
+.num small{font-size:10px;color:var(--muted);font-weight:500;margin-top:1px}
+.num:active{background:var(--btn-hi);transform:translateY(1px)}
+.notes-on .num{color:var(--accent)}
+
+.hint-text{font-size:13px;color:var(--muted);text-align:center;line-height:1.5}
+
+/* Modali */
+.modal{position:fixed;inset:0;z-index:20;display:none;align-items:flex-end;justify-content:center;background:rgba(10,12,18,.45)}
+.modal.open{display:flex;animation:fade .18s ease}
+@keyframes fade{from{opacity:0}}
+.sheet{
+  width:100%;max-width:540px;background:var(--paper);border-radius:28px 28px 0 0;
+  padding:20px 20px calc(env(safe-area-inset-bottom) + 20px);max-height:88vh;overflow:auto;
+  animation:up .22s cubic-bezier(.2,.8,.2,1)
+}
+@keyframes up{from{transform:translateY(30px);opacity:.4}}
+@media (min-width:600px){.modal{align-items:center}.sheet{border-radius:28px}}
+.sheet h2{font-family:"Nunito",ui-rounded,system-ui,sans-serif;font-weight:900;font-size:25px;margin-bottom:4px}
+.sheet p.sub{color:var(--muted);font-size:14px;margin-bottom:16px;line-height:1.45}
+.sheet .rules{font-size:14px;line-height:1.55;color:var(--ink);margin:4px 0 8px}
+.sheet .rules li{margin:0 0 6px 18px}
+.choices{display:grid;gap:8px}
+.choice{display:flex;justify-content:space-between;align-items:center;text-align:left;padding:14px 16px;border-radius:18px;background:var(--btn);gap:12px}
+.choice:active{background:var(--btn-hi)}
+.choice strong{display:block;font-size:16px}
+.choice span{font-size:13px;color:var(--muted)}
+.dots{display:flex;gap:3px;flex:none}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.dots i.f{background:var(--accent)}
+.ghost{width:100%;margin-top:12px;padding:12px;border-radius:14px;color:var(--muted);font-weight:600}
+.primary{width:100%;margin-top:16px;padding:15px;border-radius:16px;background:var(--accent);color:var(--accent-ink);font-weight:800;font-size:16px;box-shadow:0 8px 18px -10px var(--accent)}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0}
+.stat{background:var(--btn);border-radius:14px;padding:12px;text-align:center}
+.stat b{display:block;font-size:22px;font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{padding:9px 4px;text-align:right;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--muted);font-weight:500;font-size:12px}
+.setting{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);font-size:15px;gap:12px;width:100%;text-align:left}
+.setting small{display:block;color:var(--muted);font-size:12px}
+.switch{width:46px;height:28px;border-radius:999px;background:var(--line);position:relative;flex:none;transition:background .15s}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .15s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.switch.on{background:var(--accent)}
+.switch.on::after{transform:translateX(18px)}
+.section-title{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:20px 0 4px}
+.danger{color:var(--err);font-weight:600;padding:12px 0;font-size:14px}
+.record{display:inline-block;margin-top:8px;padding:4px 10px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:13px}
+.loading{display:flex;flex-direction:column;align-items:center;gap:14px;padding:30px 0;color:var(--muted)}
+.spinner{width:34px;height:34px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--accent);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 24px);transform:translate(-50%,20px);opacity:0;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;font-weight:500;transition:.2s;pointer-events:none;z-index:30;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+kbd{font-family:inherit;font-size:11px;padding:1px 6px;border-radius:6px;background:var(--btn);border:1px solid var(--line);color:var(--ink)}
+.kbd{display:none;font-size:12px;line-height:1.9;color:var(--muted)}
+
+
+/* Telefoni stretti: il pulsante indietro basta, il sottotitolo del marchio sparisce */
+@media (max-width:480px){
+  .top-left .brand small{display:none}
+  .top-left .brand{font-size:24px}
+  .hbtns{gap:5px}
+}
+.top-left{min-width:0}
+.top-left .brand{overflow:hidden;text-overflow:ellipsis}
+/* Ordine su mobile */
+.side{display:contents}
+header.top{order:0}.status{order:1}.stage{order:2}.tools,.seg{order:3}.pad,.extra{order:4}
+
+/* Desktop: area di gioco a sinistra, comandi a destra */
+@media (min-width:880px) and (min-height:560px){
+  .app.split{
+    max-width:1060px;min-height:100vh;display:grid;
+    grid-template-columns:minmax(0,1fr) 320px;grid-template-rows:auto 1fr;
+    column-gap:48px;row-gap:28px;align-content:center;padding:32px 40px
+  }
+  .app.split header.top{grid-column:1 / -1}
+  .app.split .stage{grid-column:1;grid-row:2;justify-self:center;align-self:center;width:min(100%, calc(100vh - 170px), 640px)}
+  .app.split .side{display:flex;flex-direction:column;gap:22px;grid-column:2;grid-row:2;align-self:center}
+  .app.split .status{flex-wrap:wrap;row-gap:10px}
+  .app.split .kbd{display:block;order:9}
+  .brand{font-size:32px}
+  .tool:hover,.num:hover,.choice:hover{background:var(--btn-hi)}
+  .icon-btn:hover,.pill:hover{filter:brightness(1.08)}
+}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}

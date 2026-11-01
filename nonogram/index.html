@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nonogram - Brain Playground</title>
+<meta name="theme-color" content="#f4efe6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14161c" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="../shared/base.css">
+<style>
+.nono{
+  --cs:24px;
+  display:grid;width:max-content;margin:0 auto;touch-action:none;
+  background:var(--paper);border-radius:10px;box-shadow:var(--shadow);padding:6px;
+}
+.corner{}
+.cc{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:1px;padding-bottom:4px;
+  font-size:calc(var(--cs) * .48);font-weight:700;font-variant-numeric:tabular-nums;line-height:1.08;color:var(--ink)}
+.rc{display:flex;justify-content:flex-end;align-items:center;gap:calc(var(--cs) * .2);padding-right:6px;
+  font-size:calc(var(--cs) * .48);font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink)}
+.cc.done,.rc.done{color:var(--muted);opacity:.45}
+.cc.cur,.rc.cur{color:var(--accent)}
+.cc.alt{background:color-mix(in srgb,var(--peer) 70%,transparent);border-radius:6px 6px 0 0}
+.rc.alt{background:color-mix(in srgb,var(--peer) 70%,transparent);border-radius:6px 0 0 6px}
+.cell{width:var(--cs);height:var(--cs);position:relative;cursor:pointer;
+  border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--paper)}
+.cell.bl{border-left:2px solid var(--line-strong)}
+.cell.bt{border-top:2px solid var(--line-strong)}
+.cell.br{border-right:2px solid var(--line-strong)}
+.cell.bb{border-bottom:2px solid var(--line-strong)}
+.cell.f::after{content:"";position:absolute;inset:1px;border-radius:3px;background:var(--ink)}
+.cell.x::before,.cell.x::after{content:"";position:absolute;left:22%;right:22%;top:50%;height:2px;background:var(--muted);border-radius:2px;transform:rotate(45deg)}
+.cell.x::before{transform:rotate(-45deg)}
+.cell.hl{background:var(--peer)}
+.cell.wrong::after{background:var(--err)}
+.cell.wrong.x::before,.cell.wrong.x::after{background:var(--err)}
+.cell.hintc{animation:flash .9s ease}
+@keyframes flash{0%,100%{box-shadow:none}30%{box-shadow:inset 0 0 0 3px var(--accent)}}
+.won .cell{border-color:transparent!important;background:var(--paper)}
+.won .cell.x::before,.won .cell.x::after{display:none}
+.won .cell.f::after{background:var(--accent);inset:0;border-radius:2px;animation:reveal .5s ease both}
+@keyframes reveal{from{transform:scale(.3);opacity:0}}
+.won .cc,.won .rc{opacity:.25}
+.stage{display:flex;justify-content:center}
+.tools{grid-template-columns:repeat(4,1fr)}
+</style>
+</head>
+<body>
+<div class="app split" id="app">
+  <header class="top"></header>
+  <div class="stage" id="stage">
+    <div class="nono" id="board"></div>
+    <div class="overlay-pause" id="pauseOverlay"><div>In pausa<small>Tocca per riprendere</small></div></div>
+  </div>
+  <div class="side">
+    <div class="status">
+      <span class="tag" id="lvl">-</span>
+      <span>Controlli <b id="checks">0</b></span>
+      <span>Aiuti <b id="hints">0</b></span>
+      <button class="timer" id="btnPause" aria-label="Pausa"><svg id="pauseIcon" viewBox="0 0 24 24" fill="currentColor"></svg><span id="timer">00:00</span></button>
+    </div>
+    <div class="seg" id="modeSeg">
+      <button data-mode="1" class="on"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3" fill="currentColor"/></svg>Riempi</button>
+      <button data-mode="2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>Croce</button>
+    </div>
+    <div class="tools extra">
+      <button class="tool" id="btnUndo"></button>
+      <button class="tool" id="btnCheck"></button>
+      <button class="tool" id="btnHint"></button>
+      <button class="tool" id="btnRestart"></button>
+    </div>
+    <p class="hint-text extra">Trascina il dito per colorare più caselle in fila.</p>
+    <p class="kbd">Tastiera: frecce per muoverti, <kbd>Spazio</kbd> riempi, <kbd>X</kbd> croce, <kbd>Ctrl</kbd>+<kbd>Z</kbd> annulla</p>
+  </div>
+</div>
+<script src="../shared/ui.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

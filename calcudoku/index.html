@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Calcudoku - Brain Playground</title>
+<meta name="theme-color" content="#f4efe6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14161c" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="../shared/base.css">
+<style>
+.board{
+  display:grid;aspect-ratio:1/1;width:100%;background:var(--paper);
+  border:2.5px solid var(--line-strong);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)
+}
+.cell{position:relative;display:grid;place-items:center;cursor:pointer;
+  border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+  font-size:var(--fs);font-weight:600;font-variant-numeric:tabular-nums;color:var(--user);transition:background-color .12s}
+.cell.cR{border-right:2.5px solid var(--line-strong)}
+.cell.cB{border-bottom:2.5px solid var(--line-strong)}
+.cell.lastC{border-right:0}.cell.lastR{border-bottom:0}
+.cell .op{position:absolute;top:3px;left:5px;font-size:var(--os);font-weight:800;color:var(--accent);line-height:1;letter-spacing:-.02em}
+.cell.peer{background:var(--peer)}
+.cell.cage{background:color-mix(in srgb,var(--sel) 35%,var(--paper))}
+.cell.same{background:var(--same)}
+.cell.sel{background:var(--sel)}
+.cell.err{color:var(--err);background:var(--err-bg)}
+.cell.err.sel{background:var(--sel)}
+.cell.cageBad .op{color:var(--err);text-decoration:line-through}
+.cell.cageOk .op{color:var(--ok)}
+.cell.pop{animation:pop .28s ease}
+@keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
+.notes{position:absolute;inset:calc(var(--os) + 6px) 3px 3px;display:grid;grid-template-columns:repeat(3,1fr);align-content:center}
+.notes i{font-style:normal;display:grid;place-items:center;font-size:var(--ns);color:var(--muted);font-weight:500;line-height:1.05}
+.board.won .cell{animation:wave .6s ease both}
+@keyframes wave{0%{background:var(--paper)}40%{background:var(--same)}100%{background:var(--paper)}}
+.pad{grid-template-columns:repeat(var(--pn),minmax(0,1fr))}
+.num.done{opacity:.3}
+</style>
+</head>
+<body>
+<div class="app split" id="app">
+  <header class="top"></header>
+  <div class="stage" id="stage">
+    <div class="board" id="board"></div>
+    <div class="overlay-pause" id="pauseOverlay"><div>In pausa<small>Tocca per riprendere</small></div></div>
+  </div>
+  <div class="side">
+    <div class="status">
+      <span class="tag" id="lvl">-</span>
+      <span id="errWrap">Errori <b id="errs">0</b></span>
+      <span>Aiuti <b id="hints">0</b></span>
+      <button class="timer" id="btnPause" aria-label="Pausa"><svg id="pauseIcon" viewBox="0 0 24 24" fill="currentColor"></svg><span id="timer">00:00</span></button>
+    </div>
+    <div class="tools">
+      <button class="tool" id="btnUndo"></button>
+      <button class="tool" id="btnErase"></button>
+      <button class="tool" id="btnNotes"></button>
+      <button class="tool" id="btnHint"></button>
+    </div>
+    <div class="pad" id="pad"></div>
+    <p class="kbd">Tastiera: numeri, frecce, <kbd>N</kbd> note, <kbd>Canc</kbd> cancella, <kbd>Ctrl</kbd>+<kbd>Z</kbd> annulla, <kbd>H</kbd> aiuto</p>
+  </div>
+</div>
+<script src="../shared/ui.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
