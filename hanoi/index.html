@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Torre di Hanoi - Brain Playground</title>
+<meta name="theme-color" content="#f4efe6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14161c" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="../shared/base.css">
+<style>
+.tower{position:relative;width:100%;aspect-ratio:4/3;background:var(--paper);border-radius:20px;box-shadow:var(--shadow);display:grid;grid-template-columns:repeat(3,1fr);padding:12px 8px 16px;touch-action:manipulation}
+.peg{position:relative;display:flex;flex-direction:column-reverse;align-items:center;justify-content:flex-start;cursor:pointer;border-radius:14px;padding-bottom:10px;transition:background-color .15s}
+.peg::before{content:"";position:absolute;bottom:10px;top:12%;width:8px;border-radius:6px;background:var(--line);left:50%;transform:translateX(-50%)}
+.peg::after{content:"";position:absolute;bottom:0;left:6%;right:6%;height:10px;border-radius:6px;background:var(--line-strong);opacity:.75}
+.peg.src{background:var(--peer)}
+.peg.target{background:color-mix(in srgb,var(--ok-bg) 70%,transparent)}
+.peg.hintp{box-shadow:inset 0 0 0 3px var(--accent)}
+.disk{position:relative;z-index:1;height:var(--dh,24px);border-radius:999px;margin-top:3px;transition:transform .15s;box-shadow:inset 0 -3px 0 rgba(0,0,0,.12)}
+.disk.lift{transform:translateY(-18px)}
+.tools{grid-template-columns:repeat(3,1fr)}
+.goal{font-size:13px;color:var(--muted);text-align:center}
+</style>
+</head>
+<body>
+<div class="app split" id="app">
+  <header class="top"></header>
+  <div class="stage" id="stage">
+    <div class="tower" id="tower"></div>
+  </div>
+  <div class="side">
+    <div class="status">
+      <span class="tag" id="lvl">-</span>
+      <span>Mosse <b id="moves">0</b></span>
+      <span>Minimo <b id="min">-</b></span>
+      <button class="timer" id="btnPause" aria-label="Pausa"><svg id="pauseIcon" viewBox="0 0 24 24" fill="currentColor"></svg><span id="timer">00:00</span></button>
+    </div>
+    <div class="tools">
+      <button class="tool" id="btnUndo"></button>
+      <button class="tool" id="btnHint"></button>
+      <button class="tool" id="btnRestart"></button>
+    </div>
+    <p class="goal extra">Sposta tutta la torre sul paletto di destra. Mai un disco grande sopra uno piccolo.</p>
+    <p class="kbd">Tastiera: <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> per scegliere i paletti, <kbd>Ctrl</kbd>+<kbd>Z</kbd> annulla, <kbd>H</kbd> aiuto</p>
+  </div>
+</div>
+<script src="../shared/ui.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

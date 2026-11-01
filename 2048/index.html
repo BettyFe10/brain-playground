@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>2048 - Brain Playground</title>
+<meta name="theme-color" content="#f4efe6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14161c" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="../shared/base.css">
+<style>
+.board2048{position:relative;width:100%;aspect-ratio:1/1;background:var(--btn-hi);border-radius:18px;padding:var(--g);box-shadow:var(--shadow);touch-action:none;--g:10px}
+.bg{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--g);width:100%;height:100%}
+.bg i{border-radius:12px;background:color-mix(in srgb,var(--paper) 55%,transparent)}
+.tiles{position:absolute;inset:var(--g)}
+.t{position:absolute;width:calc((100% - 3 * var(--g)) / 4);height:calc((100% - 3 * var(--g)) / 4);border-radius:12px;display:grid;place-items:center;
+  font-weight:900;font-variant-numeric:tabular-nums;transition:transform .11s ease;will-change:transform;font-size:var(--fs,34px);color:#fff}
+.t.appear{animation:appear .18s ease .08s both}
+.t.pop{animation:pop2 .2s ease}
+@keyframes appear{from{transform:var(--pos) scale(0)}to{transform:var(--pos) scale(1)}}
+@keyframes pop2{0%{transform:var(--pos) scale(1)}50%{transform:var(--pos) scale(1.15)}100%{transform:var(--pos) scale(1)}}
+.v2{background:#f3e7d9;color:#6b5b4b}.v4{background:#f0dcc0;color:#6b5b4b}.v8{background:#f6b37f}.v16{background:#f59563}.v32{background:#f27b5f}
+.v64{background:#ec5f45}.v128{background:#edcf72}.v256{background:#e9c75a}.v512{background:#7cc08a}.v1024{background:#58b37a}.v2048{background:#b07ad8}.vbig{background:#3d3a50}
+.scores{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.scores div{background:var(--btn);border-radius:14px;padding:8px 12px;text-align:center}
+.scores span{display:block;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.scores b{font-size:22px;font-variant-numeric:tabular-nums}
+.tools{grid-template-columns:repeat(2,1fr)}
+</style>
+</head>
+<body>
+<div class="app split" id="app">
+  <header class="top"></header>
+  <div class="stage" id="stage">
+    <div class="board2048" id="board"><div class="bg"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="tiles" id="tiles"></div></div>
+  </div>
+  <div class="side">
+    <div class="scores status"><div><span>Punti</span><b id="score">0</b></div><div><span>Record</span><b id="best">0</b></div></div>
+    <div class="tools">
+      <button class="tool" id="btnUndo"></button>
+      <button class="tool" id="btnRestart"></button>
+    </div>
+    <p class="hint-text extra">Scorri in una direzione: le tessere uguali che si toccano si uniscono.</p>
+    <p class="kbd">Tastiera: frecce o <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>, <kbd>Ctrl</kbd>+<kbd>Z</kbd> annulla</p>
+  </div>
+</div>
+<script src="../shared/ui.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -48,10 +48,31 @@ const ART = {
   labirinto: `<svg viewBox="0 0 90 90"><path d="M8 8h74v74H8zM8 30h22M52 8v22h14M30 52h30v18M30 52V70M66 52h16" fill="none" style="stroke:var(--user)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
       ${[[19,19],[41,19],[19,41],[41,41],[74,41],[19,62],[48,62]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2.4" class="a-ink"/>`).join('')}
       <circle cx="74" cy="20" r="5" class="a-acc"/>
-      <rect x="60" y="56" width="16" height="16" rx="5" class="a-acc"/><circle cx="65" cy="63" r="2" fill="#fff"/><circle cx="71" cy="63" r="2" fill="#fff"/></svg>`
+      <rect x="60" y="56" width="16" height="16" rx="5" class="a-acc"/><circle cx="65" cy="63" r="2" fill="#fff"/><circle cx="71" cy="63" r="2" fill="#fff"/></svg>`,
+  campominato: `<svg viewBox="0 0 90 90">${[0,1,2,3].map(r=>[0,1,2,3].map(c=>`<rect x="${9+c*19}" y="${9+r*19}" width="17" height="17" rx="4" class="${(r+c)%3===0?'a-soft':'a-paper'}"/>`).join('')).join('')}
+      <text x="36" y="42" font-size="13" font-weight="900" fill="#3b6fd4" text-anchor="middle">1</text><text x="55" y="61" font-size="13" font-weight="900" fill="#3f8f5a" text-anchor="middle">2</text>
+      <circle cx="74" cy="33" r="6" fill="#2a2440"/><path d="M77 27l3-3" stroke="#2a2440" stroke-width="2"/><circle cx="81" cy="23" r="2" fill="#f2b705"/>
+      <path d="M17 66V54" stroke="#2a2440" stroke-width="2"/><path d="M18 54h9l-2 3 2 3h-9z" fill="#e2725b"/></svg>`,
+  flow: `<svg viewBox="0 0 90 90"><rect x="8" y="8" width="74" height="74" rx="10" class="a-paper"/>
+      <path d="M22 22h46v20" fill="none" stroke="#e2725b" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M22 40v28h26" fill="none" stroke="#5b8de2" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M40 46v4M68 60v8" fill="none" stroke="#58b37a" stroke-width="8" stroke-linecap="round"/>
+      ${[[22,22,'#e2725b'],[68,42,'#e2725b'],[22,40,'#5b8de2'],[48,68,'#5b8de2'],[68,60,'#58b37a'],[68,68,'#58b37a']].map(([x,y,c])=>`<circle cx="${x}" cy="${y}" r="7" fill="${c}"/>`).join('')}</svg>`,
+  luci: `<svg viewBox="0 0 90 90">${[0,1,2].map(r=>[0,1,2].map(c=>{const on=[1,3,4,5,7].includes(r*3+c);return `<rect x="${12+c*23}" y="${12+r*23}" width="19" height="19" rx="6" fill="${on?'#ffd257':'currentColor'}" style="${on?'':'color:var(--btn-hi)'}"/>`}).join('')).join('')}</svg>`,
+  hanoi: `<svg viewBox="0 0 90 70"><rect x="6" y="58" width="78" height="5" rx="2.5" class="a-ink" opacity=".7"/>
+      ${[16,45,74].map(x=>`<rect x="${x-1.5}" y="16" width="3" height="42" rx="1.5" style="fill:var(--line)"/>`).join('')}
+      <rect x="4" y="50" width="24" height="7" rx="3.5" fill="#6a8fe0"/><rect x="7" y="42" width="18" height="7" rx="3.5" fill="#7cc08a"/>
+      <rect x="35" y="50" width="20" height="7" rx="3.5" fill="#f2c94c"/><rect x="68" y="50" width="12" height="7" rx="3.5" fill="#e2725b"/></svg>`,
+  '2048': `<svg viewBox="0 0 90 90"><rect x="8" y="8" width="74" height="74" rx="12" style="fill:var(--btn-hi)"/>
+      ${[[0,0,'2','#f3e7d9','#6b5b4b'],[1,0,'8','#f6b37f','#fff'],[1,1,'64','#ec5f45','#fff'],[0,1,'4','#f0dcc0','#6b5b4b']].map(([c,r,t,bg,fg])=>`<rect x="${14+c*32}" y="${14+r*32}" width="29" height="29" rx="7" fill="${bg}"/><text x="${28.5+c*32}" y="${34+r*32}" font-size="${t.length>1?13:16}" font-weight="900" fill="${fg}" text-anchor="middle">${t}</text>`).join('')}</svg>`,
+  memory: `<svg viewBox="0 0 100 80"><g transform="rotate(-8 30 40)"><rect x="12" y="14" width="34" height="48" rx="7" fill="#f9b4c4"/><rect x="17" y="19" width="24" height="38" rx="4" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="2"/></g>
+      <g transform="rotate(7 66 40)"><rect x="50" y="14" width="34" height="48" rx="7" class="a-paper" style="stroke:var(--line)" stroke-width="1.5"/><path d="M67 50s-10-6-10-13a5.5 5.5 0 0 1 10-3.2 5.5 5.5 0 0 1 10 3.2c0 7-10 13-10 13z" fill="#e2725b"/></g></svg>`,
+  solitario: `<svg viewBox="0 0 100 80"><g transform="rotate(-10 34 44)"><rect x="18" y="16" width="34" height="48" rx="5" fill="#fffdf8" stroke="#d6cfc0"/><text x="24" y="30" font-size="11" font-weight="900" fill="#2a2440">K</text><path d="M35 34C33 37 29 39 29 42a3 3 0 0 0 5.2 2l-.7 4h3l-.7-4A3 3 0 0 0 41 42c0-3-4-5-6-8z" fill="#2a2440"/></g>
+      <g transform="rotate(8 62 44)"><rect x="46" y="16" width="34" height="48" rx="5" fill="#fffdf8" stroke="#d6cfc0"/><text x="52" y="30" font-size="11" font-weight="900" fill="#d64545">A</text><path d="M63 50s-8-5-8-11a4.4 4.4 0 0 1 8-2.6 4.4 4.4 0 0 1 8 2.6c0 6-8 11-8 11z" fill="#d64545"/></g></svg>`
 };
 
-const TINT = { sudoku: '--t-peach', nonogram: '--t-pink', calcudoku: '--t-blue', takuzu: '--t-apri', stelle: '--t-yellow', parole: '--t-mint', snake: '--t-sky', labirinto: '--t-lav' };
+const TINT = { sudoku: '--t-peach', nonogram: '--t-pink', calcudoku: '--t-blue', takuzu: '--t-apri', stelle: '--t-yellow', parole: '--t-mint', snake: '--t-sky', labirinto: '--t-lav',
+  campominato: '--t-mint', flow: '--t-sky', luci: '--t-lav', hanoi: '--t-apri', '2048': '--t-yellow', memory: '--t-pink', solitario: '--t-mint' };
 const GAMES = {
   logic: [
     { id: 'sudoku', name: 'Sudoku', desc: 'Il classico 9x9, quattro livelli.',
@@ -63,7 +84,21 @@ const GAMES = {
     { id: 'takuzu', name: 'Takuzu', desc: 'Due colori, tre regole, pura logica.',
       meta: () => statMeta('takuzu', 'risolti') },
     { id: 'stelle', name: 'Stelle', desc: 'Una stella per riga, colonna e zona.',
-      meta: () => statMeta('stelle', 'risolti') }
+      meta: () => statMeta('stelle', 'risolti') },
+    { id: 'campominato', name: 'Campo minato', desc: 'Senza mai tirare a indovinare.',
+      meta: () => { const g = get('bp.campominato.game'); if (g && g.started && !g.done) return 'Partita in corso'; const w = sumWon(get('bp.campominato.stats')); return w ? `${w} vinte` : ''; } },
+    { id: 'flow', name: 'Flow', desc: 'Collega i colori, riempi la griglia.',
+      meta: () => statMeta('flow', 'risolti') },
+    { id: 'luci', name: 'Lights Out', desc: 'Spegni tutte le luci.',
+      meta: () => statMeta('luci', 'risolti') },
+    { id: 'hanoi', name: 'Torre di Hanoi', desc: 'Sposta la torre, un disco alla volta.',
+      meta: () => statMeta('hanoi', 'torri') }
+  ],
+  relax: [
+    { id: 'memory', name: 'Memory', desc: 'Trova tutte le coppie.',
+      meta: () => statMeta('memory', 'partite vinte') },
+    { id: 'solitario', name: 'Solitario', desc: 'Il classico con le carte.',
+      meta: () => statMeta('solitario', 'vinti') }
   ],
   words: [
     { id: 'parole', name: 'Parole', desc: 'Indovina la parola in sei tentativi.',
@@ -74,6 +109,8 @@ const GAMES = {
   arcade: [
     { id: 'snake', name: 'Snake', desc: 'Mangia, cresci, non morderti.',
       meta: () => { const b = get('bp.snake.best'); return b && b.score ? `Record ${b.score}` : ''; } },
+    { id: '2048', name: '2048', desc: 'Unisci i numeri fino a 2048.',
+      meta: () => { const b = get('bp.2048.best'); return b && num(b.score) ? `Record ${num(b.score)}` : ''; } },
     { id: 'labirinto', name: 'Labirinto', desc: 'Raccogli i punti, sfuggi alle ombre.',
       meta: () => { const b = get('bp.labirinto.best'); return b && b.score ? `Record ${b.score}` : ''; } }
   ]
@@ -85,7 +122,7 @@ function statMeta(id, word) {
   return w ? `${w} ${word}` : '';
 }
 
-const CHIP = { logic: 'Logica', words: 'Parole', arcade: 'Arcade' };
+const CHIP = { logic: 'Logica', words: 'Parole', relax: 'Relax', arcade: 'Arcade' };
 const box = document.getElementById('cards');
 const all = Object.entries(GAMES).flatMap(([section, list]) => list.map(g => ({ ...g, section })));
 box.innerHTML = all.map(g => `<a class="card" href="${g.id}/">

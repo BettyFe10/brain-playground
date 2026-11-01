@@ -15,5 +15,20 @@
 .dpad button:active{background:var(--btn-hi)}
 .dpad svg{width:26px;height:26px}
 .dpad .up{grid-column:2;grid-row:1}.dpad .left{grid-column:1;grid-row:2}.dpad .down{grid-column:2;grid-row:2}.dpad .right{grid-column:3;grid-row:2}
+.joy{position:relative;height:clamp(108px,19vh,160px);height:clamp(108px,19dvh,160px);border-radius:24px;background:var(--btn);display:grid;place-items:center;touch-action:none;
+  background-image:radial-gradient(circle at 50% 50%,color-mix(in srgb,var(--paper) 60%,transparent) 0 30%,transparent 31%)}
+.joy small{position:absolute;bottom:10px;left:0;right:0;text-align:center;font-size:12px;color:var(--muted);font-weight:700;pointer-events:none}
+.joy .ring{width:104px;height:104px;border-radius:50%;border:2px dashed var(--line);display:grid;place-items:center;pointer-events:none}
+.joy .knob{width:52px;height:52px;border-radius:50%;background:var(--accent);box-shadow:0 6px 14px -6px var(--accent);transition:transform .08s ease-out}
+.joy.active{background-color:var(--btn-hi)}
+.joy.active .knob{transition:none}
+.joy .arr{position:absolute;color:var(--muted);opacity:.6;pointer-events:none}
+.joy .arr svg{width:18px;height:18px}
 .opts{display:grid;gap:8px;width:100%;max-width:300px}
-@media (min-width:880px) and (min-height:560px){ .dpad{display:none} }
+@media (min-width:880px) and (min-height:560px){ .dpad,.joy{display:none} }
+
+/* Telefono: il campo di gioco si adatta all'altezza, così pad e campo stanno sempre nello schermo */
+@media (max-width:879px), (max-height:559px){
+  .app:not(.x) .stage{width:min(100%, calc((100vh - 320px) * var(--sar,1)));width:min(100%, calc((100dvh - 320px) * var(--sar,1)));margin:0 auto}
+}
+@media (max-height:760px){ .side .hint-text{display:none} }

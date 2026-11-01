@@ -52,6 +52,8 @@ header.top{display:flex;align-items:center;justify-content:space-between;gap:8px
 .icon-btn svg{width:20px;height:20px}
 .pill{height:42px;padding:0 18px;border-radius:15px;background:var(--accent);color:var(--accent-ink);font-weight:800;font-size:15px;box-shadow:0 6px 14px -8px var(--accent)}
 .pill:active{opacity:.85}
+.pill .plus{display:none;width:22px;height:22px}
+@media (max-width:480px){.pill .plus{display:block}}
 
 /* Barra di stato */
 .status{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px;color:var(--muted);padding:0 2px;min-height:28px}
@@ -153,8 +155,12 @@ kbd{font-family:inherit;font-size:11px;padding:1px 6px;border-radius:6px;backgro
 @media (max-width:480px){
   .top-left .brand small{display:none}
   .top-left .brand{font-size:24px}
+  .top-left .brand.long{font-size:20px;letter-spacing:-.6px}
   .hbtns{gap:5px}
+  .pill{padding:0;width:42px;display:grid;place-items:center}
+  .pill .lbl{display:none}
 }
+@media (max-width:370px){.top-left .brand.long{font-size:18px}}
 .top-left{min-width:0}
 .top-left .brand{overflow:hidden;text-overflow:ellipsis}
 /* Ordine su mobile */

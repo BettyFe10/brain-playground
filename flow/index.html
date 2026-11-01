@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Flow - Brain Playground</title>
+<meta name="theme-color" content="#f4efe6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14161c" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="../shared/base.css">
+<style>
+.flow{position:relative;width:100%;aspect-ratio:1/1;background:var(--paper);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;touch-action:none}
+.flow svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.flow .gridline{stroke:var(--line);stroke-width:.03}
+.flow.won{animation:shine .8s ease}
+@keyframes shine{40%{box-shadow:0 0 0 6px var(--ok-bg), var(--shadow)}}
+.tools{grid-template-columns:repeat(3,1fr)}
+</style>
+</head>
+<body>
+<div class="app split" id="app">
+  <header class="top"></header>
+  <div class="stage" id="stage">
+    <div class="flow" id="flow"><svg id="svg" xmlns="http://www.w3.org/2000/svg"></svg></div>
+  </div>
+  <div class="side">
+    <div class="status">
+      <span class="tag" id="lvl">-</span>
+      <span>Tubi <b id="pipes">0</b></span>
+      <span>Pieno <b id="fill">0%</b></span>
+      <button class="timer" id="btnPause" aria-label="Pausa"><svg id="pauseIcon" viewBox="0 0 24 24" fill="currentColor"></svg><span id="timer">00:00</span></button>
+    </div>
+    <div class="tools">
+      <button class="tool" id="btnUndo"></button>
+      <button class="tool" id="btnHint"></button>
+      <button class="tool" id="btnRestart"></button>
+    </div>
+    <p class="hint-text extra">Trascina da un pallino a quello dello stesso colore. I tubi non si incrociano e devono riempire tutta la griglia.</p>
+    <p class="kbd">Trascina con il mouse da un pallino. <kbd>Ctrl</kbd>+<kbd>Z</kbd> annulla, <kbd>H</kbd> aiuto</p>
+  </div>
+</div>
+<script src="../shared/ui.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Memory - Brain Playground</title>
+<meta name="theme-color" content="#f4efe6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14161c" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="../shared/base.css">
+<style>
+.mem{display:grid;gap:var(--gap,10px);width:100%;margin:0 auto}
+.card{position:relative;aspect-ratio:3/4;perspective:700px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.card .in{position:absolute;inset:0;transition:transform .35s cubic-bezier(.3,.7,.3,1.2);transform-style:preserve-3d}
+.card.up .in,.card.got .in{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:14px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:grid;place-items:center;box-shadow:var(--shadow)}
+.back{background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.35),transparent 40%),repeating-linear-gradient(45deg,#f9b4c4 0 8px,#f7a3b7 8px 16px)}
+.back img{width:46%;opacity:.95;filter:drop-shadow(0 2px 3px rgba(0,0,0,.15))}
+@media (prefers-color-scheme: dark){.back{background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.12),transparent 40%),repeating-linear-gradient(45deg,#6b3b4a 0 8px,#5e3341 8px 16px)}}
+.front{background:var(--paper);transform:rotateY(180deg)}
+.front svg{width:68%;height:68%}
+.card.got .front{background:color-mix(in srgb,var(--ok-bg) 70%,var(--paper))}
+.card.got{animation:bump .4s ease}
+@keyframes bump{50%{transform:scale(1.07)}}
+.card.no .front{background:var(--err-bg)}
+.tools{grid-template-columns:repeat(1,1fr)}
+</style>
+</head>
+<body>
+<div class="app split" id="app">
+  <header class="top"></header>
+  <div class="stage" id="stage">
+    <div class="mem" id="mem"></div>
+  </div>
+  <div class="side">
+    <div class="status">
+      <span class="tag" id="lvl">-</span>
+      <span>Mosse <b id="moves">0</b></span>
+      <span>Coppie <b id="pairs">0</b></span>
+      <button class="timer" id="btnPause" aria-label="Pausa"><svg id="pauseIcon" viewBox="0 0 24 24" fill="currentColor"></svg><span id="timer">00:00</span></button>
+    </div>
+    <div class="tools"><button class="tool" id="btnRestart"></button></div>
+    <p class="hint-text extra">Gira due carte alla volta e trova tutte le coppie.</p>
+    <p class="kbd">Più ti ricordi, meno mosse servono. Il record conta il tempo.</p>
+  </div>
+</div>
+<script src="../shared/ui.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

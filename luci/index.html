@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lights Out - Brain Playground</title>
+<meta name="theme-color" content="#f4efe6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14161c" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" href="../icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="../shared/base.css">
+<style>
+.board{display:grid;aspect-ratio:1/1;width:100%;gap:var(--gap,8px);padding:var(--gap,8px);background:var(--paper);border-radius:20px;box-shadow:var(--shadow)}
+.l{border-radius:28%;background:var(--btn);position:relative;cursor:pointer;transition:background-color .18s, box-shadow .18s, transform .1s}
+.l:active{transform:scale(.93)}
+.l.on{background:radial-gradient(circle at 35% 30%,#fff6c9,#ffd257 45%,#f2b705);box-shadow:0 0 18px -2px rgba(242,183,5,.75)}
+@media (prefers-color-scheme: dark){.l.on{box-shadow:0 0 22px 0 rgba(255,210,87,.55)}}
+.l.hint::after{content:"";position:absolute;inset:30%;border-radius:50%;border:3px solid var(--accent);animation:pulse 1s ease infinite}
+@keyframes pulse{50%{transform:scale(1.25);opacity:.4}}
+.board.won .l{animation:glow .7s ease both}
+@keyframes glow{40%{background:#ffd257}}
+.tools{grid-template-columns:repeat(3,1fr)}
+</style>
+</head>
+<body>
+<div class="app split" id="app">
+  <header class="top"></header>
+  <div class="stage" id="stage">
+    <div class="board" id="board"></div>
+    <div class="overlay-pause" id="pauseOverlay"><div>In pausa<small>Tocca per riprendere</small></div></div>
+  </div>
+  <div class="side">
+    <div class="status">
+      <span class="tag" id="lvl">-</span>
+      <span>Mosse <b id="moves">0</b></span>
+      <span>Minimo <b id="min">-</b></span>
+      <button class="timer" id="btnPause" aria-label="Pausa"><svg id="pauseIcon" viewBox="0 0 24 24" fill="currentColor"></svg><span id="timer">00:00</span></button>
+    </div>
+    <div class="tools">
+      <button class="tool" id="btnUndo"></button>
+      <button class="tool" id="btnHint"></button>
+      <button class="tool" id="btnRestart"></button>
+    </div>
+    <p class="hint-text extra">Toccare una luce cambia lei e le quattro vicine. Spegnile tutte.</p>
+    <p class="kbd">Tastiera: frecce, <kbd>Spazio</kbd> premi, <kbd>Ctrl</kbd>+<kbd>Z</kbd> annulla, <kbd>H</kbd> aiuto</p>
+  </div>
+</div>
+<script src="../shared/ui.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

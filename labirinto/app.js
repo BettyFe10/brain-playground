@@ -424,8 +424,8 @@ function togglePause() {
   } else if (state === 'pause') { state = 'play'; hideCover(); }
   updateBar();
 }
-BP.onSwipe(arena, steer);
-document.querySelectorAll('#dpad button').forEach(b => b.addEventListener('pointerdown', e => { e.preventDefault(); steer(b.dataset.dir); }));
+BP.onSwipe($('app'), d => { if (state === 'play') steer(d); }, 14);
+BP.joystick($('joy'), steer);
 document.addEventListener('keydown', e => {
   if (BP.sheetOpen()) return;
   const map = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right', w: 'up', s: 'down', a: 'left', d: 'right' };

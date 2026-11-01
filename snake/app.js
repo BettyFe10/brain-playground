@@ -209,8 +209,8 @@ function togglePause() {
 }
 
 /* ============ Controlli ============ */
-BP.onSwipe(arena, turn);
-document.querySelectorAll('#dpad button').forEach(b => b.addEventListener('pointerdown', e => { e.preventDefault(); turn(b.dataset.dir); }));
+BP.onSwipe($('app'), d => { if (state === 'play') turn(d); }, 14);
+BP.joystick($('joy'), d => { if (state === 'menu' || state === 'over') return; turn(d); });
 document.addEventListener('keydown', e => {
   if (BP.sheetOpen()) return;
   const map = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right', w: 'up', s: 'down', a: 'left', d: 'right' };

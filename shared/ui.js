@@ -46,12 +46,12 @@ window.BP = (() => {
     h.innerHTML = `
       <div class="top-left">
         <a class="icon-btn" href="../" aria-label="Torna ai giochi">${icons.back}</a>
-        <div class="brand"><small>Brain Playground</small>${title}<span>.</span></div>
+        <div class="brand${title.length > 9 ? ' long' : ''}"><small>Brain Playground</small>${title}<span>.</span></div>
       </div>
       <div class="hbtns">
         ${help ? `<button class="icon-btn" id="btnHelp" aria-label="Regole">${icons.help}</button>` : ''}
         ${stats ? `<button class="icon-btn" id="btnStats" aria-label="Statistiche">${icons.stats}</button>` : ''}
-        ${newLabel ? `<button class="pill" id="btnNew">${newLabel}</button>` : ''}
+        ${newLabel ? `<button class="pill" id="btnNew" aria-label="${newLabel}"><span class="lbl">${newLabel}</span><svg class="plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>` : ''}
       </div>`;
   }
 
@@ -184,7 +184,11 @@ window.BP = (() => {
   /* ---------- Swipe (per i giochi arcade) ---------- */
   function onSwipe(el, cb, min = 18) {
     let sx = 0, sy = 0, active = false;
-    el.addEventListener('touchstart', e => { const t = e.touches[0]; sx = t.clientX; sy = t.clientY; active = true; }, { passive: true });
+    el.addEventListener('touchstart', e => {
+      // il pad e i pulsanti hanno già i loro comandi
+      if (e.target.closest && e.target.closest('.joy, button, a, .modal')) { active = false; return; }
+      const t = e.touches[0]; sx = t.clientX; sy = t.clientY; active = true;
+    }, { passive: true });
     el.addEventListener('touchmove', e => {
       if (!active) return;
       const t = e.touches[0], dx = t.clientX - sx, dy = t.clientY - sy;
@@ -196,7 +200,38 @@ window.BP = (() => {
     el.addEventListener('touchend', () => { active = false; }, { passive: true });
   }
 
+  /* ---------- Pad direzionale "a pollice": trascina senza staccare il dito ---------- */
+  function joystick(el, cb, step = 14) {
+    const knob = el.querySelector('.knob');
+    let ax = 0, ay = 0, cx = 0, cy = 0, id = null, last = null;
+    const setKnob = (dx, dy) => {
+      if (!knob) return;
+      const max = 34, d = Math.hypot(dx, dy), k = d > max ? max / d : 1;
+      knob.style.transform = `translate(${dx * k}px, ${dy * k}px)`;
+    };
+    el.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      id = e.pointerId; ax = cx = e.clientX; ay = cy = e.clientY; last = null;
+      el.classList.add('active');
+      try { el.setPointerCapture(id); } catch { /* ignore */ }
+    });
+    el.addEventListener('pointermove', e => {
+      if (e.pointerId !== id) return;
+      const dx = e.clientX - ax, dy = e.clientY - ay;
+      setKnob(e.clientX - cx, e.clientY - cy);
+      if (Math.max(Math.abs(dx), Math.abs(dy)) < step) return;
+      const dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up');
+      // il punto di riferimento si sposta: ogni svolta è relativa all'ultimo movimento
+      ax = e.clientX; ay = e.clientY;
+      if (dir !== last) { last = dir; vibrate(8); cb(dir); }
+    });
+    const end = e => { if (e.pointerId !== id) return; id = null; el.classList.remove('active'); setKnob(0, 0); };
+    el.addEventListener('pointerup', end);
+    el.addEventListener('pointercancel', end);
+  }
+
   return {
+    joystick,
     store, fmt, randInt, shuffle, $, vibrate, icons, header,
     sheet, closeSheet, sheetOpen, onSheet, toast, loading, levelPicker,
     Stats, statsSheet, switchRow, ticker, setPauseIcon, registerSW, onSwipe,
